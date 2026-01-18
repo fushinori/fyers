@@ -1,0 +1,11 @@
+[package]
+name = "fyers"
+version = "0.0.1"
+edition = "2024"
+description = "Idiomatic async Rust client for the Fyers trading API."
+repository = "https://github.com/fushinori/fyers"
+keywords = ["fyers", "trading", "stocks", "api-client", "india"]
+categories = ["api-bindings", "finance", "web-programming::http-client"]
+license = "MIT OR Apache-2.0"
+
+[dependencies]
