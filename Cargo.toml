@@ -9,3 +9,13 @@ categories = ["api-bindings", "finance", "web-programming::http-client"]
 license = "MIT OR Apache-2.0"
 
 [dependencies]
+hex = "0.4.3"
+reqwest = {version = "0.13.1", features = ["json"]}
+serde = {version = "1.0.228", features = ["derive"]}
+sha2 = "0.10.9"
+thiserror = "2.0.18"
+url = "2.5.8"
+
+[dev-dependencies]
+dotenvy = "0.15.7"
+tokio = {version = "1.49.0", features = ["full"]}
