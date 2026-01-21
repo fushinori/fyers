@@ -23,11 +23,11 @@
 use reqwest::Client;
 use url::Url;
 
-mod error;
+pub mod error;
+pub use error::AuthError;
 mod helpers;
 mod types;
 
-use self::error::AuthError;
 use self::types::{
     ApiStatus, GenerateTokenRequest, GenerateTokenResponse, RefreshTokenRequest, Tokens,
 };
