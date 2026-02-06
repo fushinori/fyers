@@ -24,13 +24,13 @@ use reqwest::Client;
 use url::Url;
 
 pub mod error;
-pub use error::AuthError;
 mod helpers;
 mod types;
 
-use self::types::{
-    ApiStatus, GenerateTokenRequest, GenerateTokenResponse, RefreshTokenRequest, Tokens,
-};
+pub use error::AuthError;
+pub use types::Tokens;
+
+use self::types::{ApiStatus, GenerateTokenRequest, GenerateTokenResponse, RefreshTokenRequest};
 
 /// Generates the Fyers authentication URL for the first step of the auth flow.
 ///
