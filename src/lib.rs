@@ -2,5 +2,6 @@
 pub mod auth;
 
 mod error;
+mod models;
 
 pub use self::error::FyersError;
