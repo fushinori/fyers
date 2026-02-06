@@ -1,6 +1,6 @@
 [package]
 name = "fyers"
-version = "0.1.2"
+version = "0.1.3"
 edition = "2024"
 description = "Idiomatic async Rust client for the Fyers trading API."
 repository = "https://github.com/fushinori/fyers"
