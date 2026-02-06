@@ -44,7 +44,8 @@ pub fn generate_url(client_id: &str, redirect_uri: &str, state: &str) -> Result<
     url.query_pairs_mut()
         .append_pair("client_id", client_id)
         .append_pair("redirect_uri", redirect_uri)
-        .append_pair("state", state);
+        .append_pair("state", state)
+        .append_pair("response_type", "code");
 
     Ok(url)
 }
