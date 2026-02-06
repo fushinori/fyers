@@ -7,3 +7,5 @@ mod models;
 
 pub use self::client::Fyers;
 pub use self::error::FyersError;
+
+pub use self::models::profile::Profile;
