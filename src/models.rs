@@ -6,3 +6,5 @@ pub use orders::{
     order::Order, order_type::OrderType, place_order_request::PlaceOrderRequest,
     product_type::ProductType, side::Side, validity::Validity,
 };
+
+pub use profile::Profile;
