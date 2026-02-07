@@ -1,6 +1,6 @@
 use std::{env, error::Error};
 
-use fyers::Fyers;
+use fyers::{Fyers, PlaceOrderRequest};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
@@ -11,9 +11,22 @@ async fn main() -> Result<(), Box<dyn Error>> {
     // Create a fyers client.
     let fyers = Fyers::new(&client_id, &access_token);
 
-    // Call methods.
+    // Get profile info.
     let profile = fyers.profile().await?;
     println!("{profile:?}");
+
+    // Place a single order.
+    //
+    // Note how we can use default values
+    let order_request = PlaceOrderRequest {
+        symbol: "NSE:JIOFIN-EQ".to_string(),
+        qty: 1,
+        offline_order: true,
+        ..Default::default()
+    };
+    let order = fyers.place_order(order_request).await?;
+
+    println!("{order:?}");
 
     Ok(())
 }
