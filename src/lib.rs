@@ -5,6 +5,7 @@ pub mod client;
 mod endpoints;
 mod error;
 mod models;
+mod utils;
 
 pub use self::client::Fyers;
 pub use self::error::FyersError;
