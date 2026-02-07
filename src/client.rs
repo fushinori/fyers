@@ -15,10 +15,15 @@ pub struct Fyers {
 impl Fyers {
     /// Create a new Fyers client.
     pub fn new(client_id: &str, access_token: &str) -> Self {
+        let http = reqwest::Client::builder()
+            .user_agent("fyers/0.1 (https://github.com/fushinori/fyers)")
+            .build()
+            .unwrap();
+
         Self {
             client_id: client_id.to_string(),
             access_token: access_token.to_string(),
-            http: reqwest::Client::new(),
+            http,
         }
     }
 
