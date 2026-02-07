@@ -28,11 +28,11 @@ impl Fyers {
         format!("{}:{}", self.client_id, self.access_token)
     }
 
-    // Send requests and parse the response.
-    async fn send_and_parse<T>(&self, req: reqwest::RequestBuilder) -> Result<T, FyersError>
-    where
-        T: serde::de::DeserializeOwned,
-    {
+    // Send requests and validate the response
+    async fn send_and_validate(
+        &self,
+        req: reqwest::RequestBuilder,
+    ) -> Result<serde_json::Value, FyersError> {
         let response = req.send().await?;
         let status = response.status();
         let body = response.text().await?;
@@ -42,7 +42,7 @@ impl Fyers {
             return Err(FyersError::HttpStatus { status, body });
         }
 
-        let api_response: ApiResponse<T> = serde_json::from_str(&body)?;
+        let api_response: ApiResponse = serde_json::from_str(&body)?;
 
         if let ApiStatus::Error = api_response.s {
             return Err(FyersError::Api {
@@ -51,22 +51,16 @@ impl Fyers {
             });
         }
 
-        let data = api_response.data.ok_or(FyersError::Api {
-            code: api_response.code,
-            message: "missing data in success response".into(),
-        })?;
+        let raw_response = serde_json::from_str(&body)?;
 
-        Ok(data)
+        Ok(raw_response)
     }
 
     // GET request helper
-    pub(crate) async fn get<T>(&self, path: &str) -> Result<T, FyersError>
-    where
-        T: serde::de::DeserializeOwned,
-    {
+    pub(crate) async fn get(&self, path: &str) -> Result<serde_json::Value, FyersError> {
         let url = format!("{BASE_URL}/{path}");
 
-        self.send_and_parse(
+        self.send_and_validate(
             self.http
                 .get(url)
                 .header("Authorization", self.auth_header()),
@@ -75,14 +69,17 @@ impl Fyers {
     }
 
     // POST request helper
-    pub(crate) async fn post<T, B>(&self, path: &str, body: &B) -> Result<T, FyersError>
+    pub(crate) async fn post<B>(
+        &self,
+        path: &str,
+        body: &B,
+    ) -> Result<serde_json::Value, FyersError>
     where
-        T: serde::de::DeserializeOwned,
         B: serde::Serialize,
     {
         let url = format!("{BASE_URL}/{path}");
 
-        self.send_and_parse(
+        self.send_and_validate(
             self.http
                 .post(url)
                 .header("Authorization", self.auth_header())

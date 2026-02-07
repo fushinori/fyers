@@ -1,11 +1,10 @@
 use serde::Deserialize;
 
 #[derive(Debug, Deserialize, Clone)]
-pub struct ApiResponse<T> {
+pub struct ApiResponse {
     pub s: ApiStatus,
     pub code: i32,
     pub message: String,
-    pub data: Option<T>,
 }
 
 #[derive(Debug, Deserialize, Clone)]
