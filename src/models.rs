@@ -1,4 +1,5 @@
 pub mod api_response;
+pub mod history;
 pub mod orders;
 pub mod profile;
 
@@ -8,3 +9,7 @@ pub use orders::{
 };
 
 pub use profile::Profile;
+
+pub use history::{
+    candle_resolution::CandleResolution, history_request::HistoryRequest, history_response::Candle,
+};
