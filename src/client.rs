@@ -3,8 +3,6 @@
 use crate::FyersError;
 use crate::models::api_response::{ApiResponse, ApiStatus};
 
-const BASE_URL: &str = "https://api-t1.fyers.in/api/v3";
-
 /// Asynchronous Fyers client.
 ///
 /// Implements endpoints as associated methods.
@@ -57,9 +55,7 @@ impl Fyers {
     }
 
     // GET request helper
-    pub(crate) async fn get(&self, path: &str) -> Result<serde_json::Value, FyersError> {
-        let url = format!("{BASE_URL}/{path}");
-
+    pub(crate) async fn get(&self, url: &str) -> Result<serde_json::Value, FyersError> {
         self.send_and_validate(
             self.http
                 .get(url)
@@ -68,17 +64,29 @@ impl Fyers {
         .await
     }
 
-    // POST request helper
-    pub(crate) async fn post<B>(
+    // GET request with query params helper
+    pub(crate) async fn get_query<Q>(
         &self,
-        path: &str,
-        body: &B,
+        url: &str,
+        query: &Q,
     ) -> Result<serde_json::Value, FyersError>
+    where
+        Q: serde::Serialize + ?Sized,
+    {
+        self.send_and_validate(
+            self.http
+                .get(url)
+                .query(query)
+                .header("Authorization", self.auth_header()),
+        )
+        .await
+    }
+
+    // POST request helper
+    pub(crate) async fn post<B>(&self, url: &str, body: &B) -> Result<serde_json::Value, FyersError>
     where
         B: serde::Serialize,
     {
-        let url = format!("{BASE_URL}/{path}");
-
         self.send_and_validate(
             self.http
                 .post(url)
