@@ -7,7 +7,7 @@ mod error;
 mod models;
 mod utils;
 
-pub use self::client::Fyers;
-pub use self::error::FyersError;
+pub use client::Fyers;
+pub use error::FyersError;
 
-pub use self::models::profile::Profile;
+pub use models::{Order, OrderType, PlaceOrderRequest, ProductType, Profile, Side, Validity};
