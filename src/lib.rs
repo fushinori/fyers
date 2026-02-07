@@ -2,12 +2,23 @@
 pub mod auth;
 pub mod client;
 
+mod datetime;
 mod endpoints;
 mod error;
 mod models;
+mod urls;
 mod utils;
 
 pub use client::Fyers;
 pub use error::FyersError;
 
-pub use models::{Order, OrderType, PlaceOrderRequest, ProductType, Profile, Side, Validity};
+// Profile
+pub use models::Profile;
+
+// History
+pub use models::{Candle, CandleResolution, HistoryRequest};
+
+// Orders
+pub use models::{Order, OrderType, PlaceOrderRequest, ProductType, Side, Validity};
+
+pub use datetime::ist_datetime;
