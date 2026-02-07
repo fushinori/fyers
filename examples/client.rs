@@ -24,7 +24,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
         offline_order: true,
         ..Default::default()
     };
-    let order = fyers.place_order(order_request).await?;
+    let order = fyers.place_order(&order_request).await?;
 
     println!("{order:?}");
 
