@@ -1,6 +1,6 @@
 use std::{env, error::Error};
 
-use fyers::{Fyers, PlaceOrderRequest};
+use fyers::{Fyers, HistoryRequest, PlaceOrderRequest};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
@@ -24,9 +24,22 @@ async fn main() -> Result<(), Box<dyn Error>> {
         offline_order: true,
         ..Default::default()
     };
-    let order = fyers.place_order(&order_request).await?;
 
+    let order = fyers.place_order(&order_request).await?;
     println!("{order:?}");
+
+    // Set from and to dates according to IST easily
+    let from = fyers::ist_datetime(2026, 2, 5, 9, 30);
+    let to = fyers::ist_datetime(2026, 2, 5, 15, 15);
+
+    // Defaults to 5 min candle resolution
+    let history_request = HistoryRequest::new("NSE:JIOFIN-EQ", from, to);
+
+    // Returns a Vec of candles
+    let history = fyers.history(&history_request).await?;
+    for candle in &history {
+        println!("{}", candle.open)
+    }
 
     Ok(())
 }
