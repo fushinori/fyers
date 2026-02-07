@@ -1,6 +1,8 @@
 use std::{env, error::Error};
 
-use fyers::{Fyers, HistoryRequest, PlaceOrderRequest};
+use fyers::{
+    Fyers, HistoryRequestBuilder, OrderType, PlaceOrderBuilder, ProductType, Side, Validity,
+};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
@@ -15,25 +17,30 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let profile = fyers.profile().await?;
     println!("{profile:?}");
 
-    // Place a single order.
-    //
-    // Note how we can use default values
-    let order_request = PlaceOrderRequest {
-        symbol: "NSE:JIOFIN-EQ".to_string(),
-        qty: 1,
-        offline_order: true,
-        ..Default::default()
-    };
+    // Construct an order
+    let order = PlaceOrderBuilder::new(
+        "NSE:JIOFIN-EQ",
+        1,
+        OrderType::Market,
+        Side::Buy,
+        ProductType::Intraday,
+        Validity::Day,
+    )
+    .offline_order(true) // Optional args here
+    .build(); // build the request
 
-    let order = fyers.place_order(&order_request).await?;
+    // Pass it in here
+    let order = fyers.place_order(&order).await?;
     println!("{order:?}");
 
     // Set from and to dates according to IST easily
     let from = fyers::ist_datetime(2026, 2, 5, 9, 30);
     let to = fyers::ist_datetime(2026, 2, 5, 15, 15);
 
-    // Defaults to 5 min candle resolution
-    let history_request = HistoryRequest::new("NSE:JIOFIN-EQ", from, to);
+    // Create a history request
+    //
+    // defaults to 5 min candles
+    let history_request = HistoryRequestBuilder::new("NSE:JIOFIN-EQ", from, to).build();
 
     // Returns a Vec of candles
     let history = fyers.history(&history_request).await?;
