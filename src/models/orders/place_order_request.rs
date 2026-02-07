@@ -2,50 +2,186 @@ use serde::Serialize;
 
 use crate::{OrderType, ProductType, Side, Validity};
 
-#[derive(Debug, Serialize, Default)]
+#[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PlaceOrderRequest {
-    /// Eg: NSE:SBIN-EQ
-    pub symbol: String,
+    symbol: String,
+    qty: u32,
+    r#type: OrderType,
+    side: Side,
+    product_type: ProductType,
+    limit_price: f64,
+    stop_price: f64,
+    disclosed_qty: u32,
+    validity: Validity,
+    offline_order: bool,
+    stop_loss: f64,
+    take_profit: f64,
+    order_tag: Option<String>,
+    is_slice_order: bool,
+}
 
-    /// The quantity should be in multiples of lot size for derivatives
-    pub qty: u32,
+/// Builder for creating a request to place a single order.
+///
+/// This provides a safe and ergonomic way to construct orders without
+/// accidentally sending invalid or incomplete fields to the Fyers API.
+///
+/// Required fields are provided via [`PlaceOrderBuilder::new`], while optional
+/// parameters can be configured using the setter methods.
+///
+/// # Example
+///
+/// ```norun
+/// let order = PlaceOrderBuilder::new(
+///     "NSE:SBIN-EQ",
+///     1,
+///     OrderType::Market,
+///     Side::Buy,
+///     ProductType::Intraday,
+///     Validity::Day,
+/// )
+/// .build();
+/// ```
+#[derive(Debug)]
+pub struct PlaceOrderBuilder {
+    symbol: String,
+    qty: u32,
+    r#type: OrderType,
+    side: Side,
+    product_type: ProductType,
+    limit_price: f64,
+    stop_price: f64,
+    disclosed_qty: u32,
+    validity: Validity,
+    offline_order: bool,
+    stop_loss: f64,
+    take_profit: f64,
+    order_tag: Option<String>,
+    is_slice_order: bool,
+}
 
-    /// Order type
-    pub r#type: OrderType,
+impl PlaceOrderBuilder {
+    /// Create a new order builder with the required parameters.
+    ///
+    /// # Parameters
+    /// - `symbol` — Trading symbol (e.g. `NSE:SBIN-EQ`)
+    /// - `qty` — Quantity to trade
+    /// - `order_type` — Market, Limit, Stop, etc.
+    /// - `side` — Buy or Sell
+    /// - `product_type` — CNC, Intraday, Margin, etc.
+    /// - `validity` — DAY or IOC
+    pub fn new(
+        symbol: impl Into<String>,
+        qty: u32,
+        order_type: OrderType,
+        side: Side,
+        product_type: ProductType,
+        validity: Validity,
+    ) -> Self {
+        Self {
+            symbol: symbol.into(),
+            qty,
+            r#type: order_type,
+            side,
+            product_type,
+            validity,
 
-    /// Buy or sell
-    pub side: Side,
+            // defaults
+            limit_price: 0.0,
+            stop_price: 0.0,
+            disclosed_qty: 0,
+            offline_order: false,
+            stop_loss: 0.0,
+            take_profit: 0.0,
+            order_tag: None,
+            is_slice_order: false,
+        }
+    }
 
-    /// Product type
-    pub product_type: ProductType,
+    /// Set the limit price for the order.
+    ///
+    /// Required for **Limit** and **Stop-Limit** orders.
+    pub fn limit_price(mut self, price: f64) -> Self {
+        self.limit_price = price;
+        self
+    }
 
-    /// Provide valid price for Limit and Stoplimit orders
-    pub limit_price: f64,
+    /// Set the stop price for the order.
+    ///
+    /// Required for **Stop (SL-M)** and **Stop-Limit (SL-L)** orders.
+    pub fn stop_price(mut self, price: f64) -> Self {
+        self.stop_price = price;
+        self
+    }
 
-    /// Provide valid price for Stop and Stoplimit orders
-    pub stop_price: f64,
+    /// Set the disclosed quantity.
+    ///
+    /// This is only applicable for **equity orders**.  
+    /// Defaults to `0` (no disclosed quantity).
+    pub fn disclosed_qty(mut self, qty: u32) -> Self {
+        self.disclosed_qty = qty;
+        self
+    }
 
-    /// Allowed only for Equity
-    pub disclosed_qty: u32,
+    /// Mark the order as an AMO (After Market Order).
+    ///
+    /// Set to `true` when placing orders outside market hours.  
+    /// Defaults to `false`.
+    pub fn offline_order(mut self, value: bool) -> Self {
+        self.offline_order = value;
+        self
+    }
 
-    /// Validity
-    pub validity: Validity,
+    /// Set the stop-loss price.
+    ///
+    /// Required for **Cover Orders (CO)** and **Bracket Orders (BO)**.
+    pub fn stop_loss(mut self, price: f64) -> Self {
+        self.stop_loss = price;
+        self
+    }
 
-    /// False => When market is open
-    /// True => When placing AMO order
-    pub offline_order: bool,
+    /// Set the take-profit price.
+    ///
+    /// Required for **Bracket Orders (BO)**.
+    pub fn take_profit(mut self, price: f64) -> Self {
+        self.take_profit = price;
+        self
+    }
 
-    /// Provide valid price for CO and BO orders
-    pub stop_loss: f64,
+    /// Attach a custom tag to the order.
+    ///
+    /// This can be used to identify orders created by a strategy.
+    pub fn order_tag(mut self, tag: impl Into<String>) -> Self {
+        self.order_tag = Some(tag.into());
+        self
+    }
 
-    /// Provide valid price for BO orders
-    pub take_profit: f64,
+    /// Enable slice orders.
+    ///
+    /// When enabled, large quantities may be split into multiple smaller orders
+    /// if they exceed the exchange freeze quantity.
+    pub fn slice_order(mut self, value: bool) -> Self {
+        self.is_slice_order = value;
+        self
+    }
 
-    /// (Optional) Tag you want to assign to the specific order
-    pub order_tag: Option<String>,
-
-    /// False => The full quantity is placed as one single order.
-    /// True => The quantity is placed in multiple smaller orders if the total quantity is more than the freeze quantity.
-    pub is_slice_order: bool,
+    /// Finalize the builder and create the request payload.
+    pub fn build(self) -> PlaceOrderRequest {
+        PlaceOrderRequest {
+            symbol: self.symbol,
+            qty: self.qty,
+            r#type: self.r#type,
+            side: self.side,
+            product_type: self.product_type,
+            limit_price: self.limit_price,
+            stop_price: self.stop_price,
+            disclosed_qty: self.disclosed_qty,
+            validity: self.validity,
+            offline_order: self.offline_order,
+            stop_loss: self.stop_loss,
+            take_profit: self.take_profit,
+            order_tag: self.order_tag,
+            is_slice_order: self.is_slice_order,
+        }
+    }
 }

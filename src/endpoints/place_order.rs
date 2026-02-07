@@ -1,7 +1,8 @@
 use serde::Deserialize;
 
+use crate::models::orders::place_order_request::PlaceOrderRequest;
 use crate::urls;
-use crate::{Fyers, FyersError, Order, PlaceOrderRequest};
+use crate::{Fyers, FyersError, Order};
 
 impl Fyers {
     /// Place a single order

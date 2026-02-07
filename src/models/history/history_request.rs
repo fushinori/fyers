@@ -4,7 +4,7 @@ use serde::Serialize;
 use crate::CandleResolution;
 
 #[derive(Debug, Clone)]
-pub struct HistoryRequest {
+pub struct HistoryRequestBuilder {
     pub symbol: String,
     pub resolution: CandleResolution,
     pub from: DateTime<Utc>,
@@ -13,8 +13,8 @@ pub struct HistoryRequest {
 }
 
 #[derive(Serialize)]
-pub(crate) struct ApiHistoryRequest<'a> {
-    symbol: &'a str,
+pub struct HistoryRequest {
+    symbol: String,
     resolution: CandleResolution,
     date_format: &'static str,
     range_from: String,
@@ -25,19 +25,7 @@ pub(crate) struct ApiHistoryRequest<'a> {
     oi_flag: Option<&'static str>,
 }
 
-impl HistoryRequest {
-    pub(crate) fn as_api(&self) -> ApiHistoryRequest<'_> {
-        ApiHistoryRequest {
-            symbol: &self.symbol,
-            resolution: self.resolution,
-            date_format: "0",
-            range_from: self.from.timestamp().to_string(),
-            range_to: self.to.timestamp().to_string(),
-            cont_flag: "1",
-            oi_flag: if self.include_oi { Some("1") } else { None },
-        }
-    }
-
+impl HistoryRequestBuilder {
     /// Create a new HistoryRequest with sane defaults.
     ///
     /// 5 minute candle resolution
@@ -56,13 +44,33 @@ impl HistoryRequest {
         }
     }
 
+    /// Set the candle resolution.
+    ///
+    /// Defaults to **5-minute candles**.
     pub fn resolution(mut self, resolution: CandleResolution) -> Self {
         self.resolution = resolution;
         self
     }
 
+    /// Include Open Interest (OI) data in the response.
+    ///
+    /// This is only available for **futures and options instruments**.
+    /// Disabled by default.
     pub fn include_oi(mut self, include: bool) -> Self {
         self.include_oi = include;
         self
+    }
+
+    /// Finalize the builder and create the request payload.
+    pub fn build(self) -> HistoryRequest {
+        HistoryRequest {
+            symbol: self.symbol,
+            resolution: self.resolution,
+            date_format: "0",
+            range_from: self.from.timestamp().to_string(),
+            range_to: self.to.timestamp().to_string(),
+            cont_flag: "1",
+            oi_flag: if self.include_oi { Some("1") } else { None },
+        }
     }
 }

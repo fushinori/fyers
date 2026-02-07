@@ -16,9 +16,9 @@ pub use error::FyersError;
 pub use models::Profile;
 
 // History
-pub use models::{Candle, CandleResolution, HistoryRequest};
+pub use models::{Candle, CandleResolution, HistoryRequestBuilder};
 
 // Orders
-pub use models::{Order, OrderType, PlaceOrderRequest, ProductType, Side, Validity};
+pub use models::{Order, OrderType, PlaceOrderBuilder, ProductType, Side, Validity};
 
 pub use datetime::ist_datetime;
