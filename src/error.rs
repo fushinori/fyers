@@ -3,6 +3,7 @@ use thiserror::Error;
 
 /// Errors that can occur when interacting with the Fyers API.
 #[derive(Debug, Error)]
+#[non_exhaustive]
 pub enum FyersError {
     /// A network or request error occurred.
     #[error("request failed: {0}")]
