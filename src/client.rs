@@ -39,23 +39,27 @@ impl Fyers {
         let response = req.send().await?;
         let status = response.status();
         let body = response.text().await?;
+
         dbg!(&body);
 
+        // Try to parse API envelope FIRST (even if HTTP failed)
+        if let Ok(ApiResponse {
+            s: ApiStatus::Error,
+            code,
+            message,
+            ..
+        }) = serde_json::from_str::<ApiResponse>(&body)
+        {
+            return Err(FyersError::Api { code, message });
+        }
+
+        // If HTTP failed but API didn't give structured error
         if !status.is_success() {
             return Err(FyersError::HttpStatus { status, body });
         }
 
-        let api_response: ApiResponse = serde_json::from_str(&body)?;
-
-        if let ApiStatus::Error = api_response.s {
-            return Err(FyersError::Api {
-                code: api_response.code,
-                message: api_response.message,
-            });
-        }
-
+        // Finally parse the actual payload
         let raw_response = serde_json::from_str(&body)?;
-
         Ok(raw_response)
     }
 
