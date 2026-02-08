@@ -18,6 +18,33 @@ pub enum FyersError {
         body: String,
     },
 
+    #[error("token expired")]
+    TokenExpired,
+
+    #[error("invalid token")]
+    InvalidToken,
+
+    #[error("invalid parameters: {0}")]
+    InvalidParams(String),
+
+    #[error("invalid symbol")]
+    InvalidSymbol,
+
+    #[error("invalid order id")]
+    InvalidOrderId,
+
+    #[error("invalid position id")]
+    InvalidPositionId,
+
+    #[error("order rejected: {0}")]
+    OrderRejected(String),
+
+    #[error("invalid app id")]
+    InvalidAppId,
+
+    #[error("rate limit exceeded")]
+    RateLimited,
+
     /// The Fyers API returned an error.
     #[error("fyers api error {code}: {message}")]
     Api {
