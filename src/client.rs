@@ -2,6 +2,7 @@
 
 use crate::FyersError;
 use crate::models::api_response::{ApiResponse, ApiStatus};
+use crate::utils;
 
 /// Asynchronous Fyers client.
 ///
@@ -40,8 +41,6 @@ impl Fyers {
         let status = response.status();
         let body = response.text().await?;
 
-        dbg!(&body);
-
         // Try to parse API envelope FIRST (even if HTTP failed)
         if let Ok(ApiResponse {
             s: ApiStatus::Error,
@@ -50,7 +49,7 @@ impl Fyers {
             ..
         }) = serde_json::from_str::<ApiResponse>(&body)
         {
-            return Err(FyersError::Api { code, message });
+            return Err(utils::map_api_error(code, message));
         }
 
         // If HTTP failed but API didn't give structured error
