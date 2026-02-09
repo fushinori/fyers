@@ -56,9 +56,9 @@ pub enum FyersError {
         message: String,
     },
 
-    /// Failed to deserialize a JSON response from the Fyers API.
-    #[error("failed to deserialize response: {0}")]
-    Deserialize(#[from] serde_json::Error),
+    /// Failed to serialize or deserialize JSON.
+    #[error("json error: {0}")]
+    Json(#[from] serde_json::Error),
 
     // Missing field in success response
     #[error("missing field: '{0}' in success response")]
