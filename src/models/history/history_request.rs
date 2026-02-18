@@ -3,15 +3,37 @@ use serde::Serialize;
 
 use crate::CandleResolution;
 
+#[cfg(doc)]
+use crate::Fyers;
+
+/// Builder for creating a [`HistoryRequest`] used with [`Fyers::history`].
+///
+/// # Example
+///
+/// ```
+/// use chrono::{Utc, Duration};
+///
+/// let from = Utc::now() - Duration::days(5);
+/// let to   = Utc::now();
+///
+/// let request = HistoryRequest::builder("NSE:SBIN-EQ", from, to)
+///     .resolution(CandleResolution::Minute1)
+///     .include_oi(true)
+///     .build();
+/// ```
 #[derive(Debug, Clone)]
-pub struct HistoryRequestBuilder {
-    pub symbol: String,
-    pub resolution: CandleResolution,
-    pub from: DateTime<Utc>,
-    pub to: DateTime<Utc>,
-    pub include_oi: bool,
+pub struct HistoryBuilder {
+    symbol: String,
+    resolution: CandleResolution,
+    from: DateTime<Utc>,
+    to: DateTime<Utc>,
+    include_oi: bool,
 }
 
+/// The request type sent to the Fyers history API.
+///
+/// This type is typically constructed using [`HistoryRequest::builder`]
+/// rather than instantiated directly.
 #[derive(Serialize)]
 pub struct HistoryRequest {
     symbol: String,
@@ -25,21 +47,17 @@ pub struct HistoryRequest {
     oi_flag: Option<&'static str>,
 }
 
-impl HistoryRequestBuilder {
-    /// Create a new HistoryRequest with sane defaults.
+impl HistoryBuilder {
+    /// Creates a builder with default configuration:
     ///
-    /// 5 minute candle resolution
-    /// include_oi = false
+    /// - Resolution: **5 minute candles**
+    /// - Open Interest: **disabled**
     pub fn new(symbol: impl Into<String>, from: DateTime<Utc>, to: DateTime<Utc>) -> Self {
         Self {
             symbol: symbol.into(),
-
-            // default to 5 minutes
             resolution: CandleResolution::Minute5,
             from,
             to,
-
-            // don't include OI by default
             include_oi: false,
         }
     }
@@ -61,7 +79,7 @@ impl HistoryRequestBuilder {
         self
     }
 
-    /// Finalize the builder and create the request payload.
+    /// Return a [`HistoryRequest`] with the desired configuration.
     pub fn build(self) -> HistoryRequest {
         HistoryRequest {
             symbol: self.symbol,
@@ -72,5 +90,17 @@ impl HistoryRequestBuilder {
             cont_flag: "1",
             oi_flag: if self.include_oi { Some("1") } else { None },
         }
+    }
+}
+
+impl HistoryRequest {
+    /// Creates a [`HistoryBuilder`] to construct a [`HistoryRequest`].
+    /// This is the same as [`HistoryBuilder::new()`].
+    pub fn builder(
+        symbol: impl Into<String>,
+        from: DateTime<Utc>,
+        to: DateTime<Utc>,
+    ) -> HistoryBuilder {
+        HistoryBuilder::new(symbol, from, to)
     }
 }
