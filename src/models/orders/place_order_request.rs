@@ -39,6 +39,8 @@ pub struct OrderRequest {
 /// # Example
 ///
 /// ```
+/// use fyers::{OrderBuilder, OrderType, Side, ProductType, Validity};
+///
 /// let order = OrderBuilder::new(
 ///     "NSE:SBIN-EQ",
 ///     1,

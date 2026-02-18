@@ -25,10 +25,21 @@ use serde::Deserialize;
 /// # Example
 ///
 /// ```no_run
+/// # use fyers::Fyers;
+/// # use fyers::HistoryRequest;
+///
+/// # async fn run() -> Result<(), Box<dyn std::error::Error>> {
+/// # let fyers = Fyers::new("id", "token");
+/// # let from = fyers::ist_datetime(2026, 2, 5, 9, 30);
+/// # let to = fyers::ist_datetime(2026, 2, 5, 15, 15);
+///
+/// # let request = HistoryRequest::builder("NSE:JIOFIN-EQ", from, to).build();
 /// let candles = fyers.history(&request).await?;
 ///
 /// let last = candles.last().unwrap();
 /// println!("Close price: {}", last.close);
+/// # Ok(())
+/// # }
 /// ```
 #[derive(Debug, Clone)]
 pub struct Candle {

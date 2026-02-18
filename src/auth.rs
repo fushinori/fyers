@@ -60,6 +60,7 @@ pub fn generate_url(client_id: &str, redirect_uri: &str, state: &str) -> Result<
 /// # Example
 ///
 /// ```no_run
+/// # async fn run() -> Result<(), Box<dyn std::error::Error>> {
 /// use fyers::auth::generate_tokens;
 ///
 /// let tokens = generate_tokens(
@@ -69,6 +70,8 @@ pub fn generate_url(client_id: &str, redirect_uri: &str, state: &str) -> Result<
 /// ).await?;
 ///
 /// println!("Access token: {}", tokens.access_token);
+/// # Ok(())
+/// # }
 /// ```
 pub async fn generate_tokens(
     client_id: &str,
@@ -125,6 +128,7 @@ pub async fn generate_tokens(
 /// # Example
 ///
 /// ```no_run
+/// # async fn run() -> Result<(), Box<dyn std::error::Error>> {
 /// use fyers::auth::refresh_tokens;
 ///
 /// let tokens = refresh_tokens(
@@ -135,6 +139,8 @@ pub async fn generate_tokens(
 /// ).await?;
 ///
 /// println!("New access token: {}", tokens.access_token);
+/// # Ok(())
+/// # }
 /// ```
 pub async fn refresh_tokens(
     client_id: &str,

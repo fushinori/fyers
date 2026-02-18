@@ -12,6 +12,7 @@ use crate::Fyers;
 ///
 /// ```
 /// use chrono::{Utc, Duration};
+/// use fyers::{CandleResolution, HistoryRequest};
 ///
 /// let from = Utc::now() - Duration::days(5);
 /// let to   = Utc::now();
