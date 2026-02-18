@@ -2,9 +2,16 @@ use serde::Serialize;
 
 use crate::{OrderType, ProductType, Side, Validity};
 
+#[cfg(doc)]
+use crate::Fyers;
+
+/// The request type sent to the Fyers place order API.
+///
+/// This type is typically constructed using [`OrderRequest::builder`]
+/// rather than instantiated directly.
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct PlaceOrderRequest {
+pub struct OrderRequest {
     symbol: String,
     qty: u32,
     r#type: OrderType,
@@ -21,18 +28,18 @@ pub struct PlaceOrderRequest {
     is_slice_order: bool,
 }
 
-/// Builder for creating a request to place a single order.
+/// Builder for creating an [`OrderRequest`] used with [`Fyers::place_order`].
 ///
 /// This provides a safe and ergonomic way to construct orders without
 /// accidentally sending invalid or incomplete fields to the Fyers API.
 ///
-/// Required fields are provided via [`PlaceOrderBuilder::new`], while optional
+/// Required fields are provided via [`OrderBuilder::new`], while optional
 /// parameters can be configured using the setter methods.
 ///
 /// # Example
 ///
 /// ```
-/// let order = PlaceOrderBuilder::new(
+/// let order = OrderBuilder::new(
 ///     "NSE:SBIN-EQ",
 ///     1,
 ///     OrderType::Market,
@@ -40,10 +47,11 @@ pub struct PlaceOrderRequest {
 ///     ProductType::Intraday,
 ///     Validity::Day,
 /// )
+/// .order_tag("testing")
 /// .build();
 /// ```
 #[derive(Debug)]
-pub struct PlaceOrderBuilder {
+pub struct OrderBuilder {
     symbol: String,
     qty: u32,
     r#type: OrderType,
@@ -60,7 +68,7 @@ pub struct PlaceOrderBuilder {
     is_slice_order: bool,
 }
 
-impl PlaceOrderBuilder {
+impl OrderBuilder {
     /// Create a new order builder with the required parameters.
     ///
     /// # Parameters
@@ -165,9 +173,9 @@ impl PlaceOrderBuilder {
         self
     }
 
-    /// Finalize the builder and create the request payload.
-    pub fn build(self) -> PlaceOrderRequest {
-        PlaceOrderRequest {
+    /// Return an [`OrderRequest`] with the desired configuration.
+    pub fn build(self) -> OrderRequest {
+        OrderRequest {
             symbol: self.symbol,
             qty: self.qty,
             r#type: self.r#type,
@@ -183,5 +191,20 @@ impl PlaceOrderBuilder {
             order_tag: self.order_tag,
             is_slice_order: self.is_slice_order,
         }
+    }
+}
+
+impl OrderRequest {
+    /// Creates an [`OrderBuilder`] to construct an [`OrderRequest`].
+    /// This is the same as [`OrderBuilder::new()`].
+    pub fn builder(
+        symbol: impl Into<String>,
+        qty: u32,
+        order_type: OrderType,
+        side: Side,
+        product_type: ProductType,
+        validity: Validity,
+    ) -> OrderBuilder {
+        OrderBuilder::new(symbol, qty, order_type, side, product_type, validity)
     }
 }
