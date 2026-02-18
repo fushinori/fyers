@@ -64,3 +64,30 @@ pub enum FyersError {
     #[error("missing field: '{0}' in success response")]
     MissingField(&'static str),
 }
+
+impl FyersError {
+    pub(crate) fn map_api_error(code: i32, message: String) -> FyersError {
+        match code {
+            -8 => FyersError::TokenExpired,
+
+            // -15 | -16 | -17
+            -17..=-15 => FyersError::InvalidToken,
+
+            -50 | 400 => FyersError::InvalidParams(message),
+
+            -51 => FyersError::InvalidOrderId,
+
+            -53 => FyersError::InvalidPositionId,
+
+            -99 => FyersError::OrderRejected(message),
+
+            -300 => FyersError::InvalidSymbol,
+
+            -352 => FyersError::InvalidAppId,
+
+            -429 => FyersError::RateLimited,
+
+            _ => FyersError::Api { code, message },
+        }
+    }
+}
