@@ -6,7 +6,6 @@ mod datetime;
 mod endpoints;
 mod error;
 mod models;
-mod urls;
 mod utils;
 
 pub use client::Fyers;

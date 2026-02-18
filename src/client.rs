@@ -11,6 +11,26 @@ pub struct Fyers {
     client_id: String,
     access_token: String,
     http: reqwest::Client,
+    pub(crate) base_urls: BaseUrls,
+}
+
+// All unique base URLs
+//
+// Edit this struct and its default implementation
+// to add more base URLs.
+// The endpoints can then choose the base URL it needs.
+pub(crate) struct BaseUrls {
+    pub api_v3: String,
+    pub data: String,
+}
+
+impl Default for BaseUrls {
+    fn default() -> Self {
+        Self {
+            api_v3: "https://api-t1.fyers.in/api/v3".into(),
+            data: "https://api-t1.fyers.in/data".into(),
+        }
+    }
 }
 
 impl Fyers {
@@ -25,6 +45,7 @@ impl Fyers {
             client_id: client_id.to_string(),
             access_token: access_token.to_string(),
             http,
+            base_urls: BaseUrls::default(),
         }
     }
 
