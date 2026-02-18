@@ -48,6 +48,27 @@ impl Fyers {
         }
     }
 
+    // Create a client with custom base URLs.
+    //
+    // Mainly intended for testing.
+    #[doc(hidden)]
+    pub fn with_base_urls(
+        client_id: &str,
+        access_token: &str,
+        api_v3: impl Into<String>,
+        data: impl Into<String>,
+    ) -> Self {
+        Self {
+            client_id: client_id.to_string(),
+            access_token: access_token.to_string(),
+            http: reqwest::Client::new(),
+            base_urls: BaseUrls {
+                api_v3: api_v3.into(),
+                data: data.into(),
+            },
+        }
+    }
+
     fn auth_header(&self) -> String {
         format!("{}:{}", self.client_id, self.access_token)
     }
