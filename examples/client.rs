@@ -1,8 +1,6 @@
 use std::{env, error::Error};
 
-use fyers::{
-    Fyers, HistoryRequestBuilder, OrderType, PlaceOrderBuilder, ProductType, Side, Validity,
-};
+use fyers::{Fyers, HistoryRequest, OrderRequest, OrderType, ProductType, Side, Validity};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
@@ -18,7 +16,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     println!("{profile:?}");
 
     // Construct an order
-    let order = PlaceOrderBuilder::new(
+    let order = OrderRequest::builder(
         "NSE:JIOFIN-EQ",
         1,
         OrderType::Market,
@@ -40,7 +38,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     // Create a history request
     //
     // defaults to 5 min candles
-    let history_request = HistoryRequestBuilder::new("NSE:JIOFIN-EQ", from, to).build();
+    let history_request = HistoryRequest::builder("NSE:JIOFIN-EQ", from, to).build();
 
     // Returns a Vec of candles
     let history = fyers.history(&history_request).await?;
