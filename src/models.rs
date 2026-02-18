@@ -4,13 +4,13 @@ pub mod orders;
 pub mod profile;
 
 pub use orders::{
-    order::Order, order_type::OrderType, place_order_request::PlaceOrderBuilder,
-    product_type::ProductType, side::Side, validity::Validity,
+    order::Order, order_type::OrderType, place_order_request::OrderBuilder,
+    place_order_request::OrderRequest, product_type::ProductType, side::Side, validity::Validity,
 };
 
 pub use profile::Profile;
 
 pub use history::{
-    candle_resolution::CandleResolution, history_request::HistoryRequestBuilder,
-    history_response::Candle,
+    candle_resolution::CandleResolution, history_request::HistoryBuilder,
+    history_request::HistoryRequest, history_response::Candle,
 };
