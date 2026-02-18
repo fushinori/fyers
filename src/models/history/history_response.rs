@@ -1,6 +1,35 @@
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
 
+/// A single OHLCV candle returned by the Fyers History API.
+///
+/// Timestamps are in **UTC**. You can convert them to IST using your own
+/// timezone utilities if required.
+///
+/// # Fields
+///
+/// - `time` — Candle open time (start of the interval)
+/// - `open` — Opening price
+/// - `high` — Highest traded price during the interval
+/// - `low` — Lowest traded price during the interval
+/// - `close` — Closing price (last traded price in the interval)
+/// - `volume` — Total traded volume during the interval
+/// - `open_interest` — Open interest for derivative instruments (if requested)
+///
+/// # Notes
+///
+/// * The Fyers API returns candles as an array of numeric values.
+///   This struct provides a strongly-typed representation.
+/// * `open_interest` will be `None` unless the history request enables OI.
+///
+/// # Example
+///
+/// ```no_run
+/// let candles = fyers.history(&request).await?;
+///
+/// let last = candles.last().unwrap();
+/// println!("Close price: {}", last.close);
+/// ```
 #[derive(Debug, Clone)]
 pub struct Candle {
     pub time: DateTime<Utc>,
