@@ -21,6 +21,7 @@ use crate::Fyers;
 ///     .include_oi(true)
 ///     .build();
 /// ```
+#[must_use = "builders must be finalized with .build()"]
 #[derive(Debug, Clone)]
 pub struct HistoryBuilder {
     symbol: String,

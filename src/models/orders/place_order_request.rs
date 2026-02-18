@@ -50,6 +50,7 @@ pub struct OrderRequest {
 /// .order_tag("testing")
 /// .build();
 /// ```
+#[must_use = "builders must be finalized with .build()"]
 #[derive(Debug)]
 pub struct OrderBuilder {
     symbol: String,
