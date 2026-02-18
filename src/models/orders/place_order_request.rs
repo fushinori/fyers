@@ -31,7 +31,7 @@ pub struct PlaceOrderRequest {
 ///
 /// # Example
 ///
-/// ```norun
+/// ```
 /// let order = PlaceOrderBuilder::new(
 ///     "NSE:SBIN-EQ",
 ///     1,
