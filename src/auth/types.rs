@@ -58,9 +58,12 @@ pub(crate) struct GenerateTokenResponse {
     pub(crate) refresh_token: Option<String>,
 }
 
-/// Access and refresh tokens obtained after successful authentication.
+/// Tokens obtained after successful authentication.
 #[derive(Debug, Deserialize)]
 pub struct Tokens {
+    /// Your access token
     pub access_token: String,
+
+    /// Your refresh token (valid for 15 days)
     pub refresh_token: String,
 }

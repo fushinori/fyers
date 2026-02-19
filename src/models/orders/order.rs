@@ -1,7 +1,8 @@
 use serde::Deserialize;
 
-/// Returned on successful order
+/// Returned on successfully placing an order.
 #[derive(Debug, Deserialize, Clone)]
 pub struct Order {
+    /// Order ID
     pub id: String,
 }

@@ -1,23 +1,43 @@
 use serde::Serialize;
 
-#[derive(Debug, Serialize, Clone, Copy)]
-#[serde(rename_all = "UPPERCASE")]
+/// Product type for an order.
+///
+/// This determines how the position is held and margined by the broker.
+///
+/// Values map directly to the strings expected by Fyers.
+#[derive(Debug, Clone, Copy, Serialize)]
 pub enum ProductType {
-    /// For equity only
+    /// **CNC (Cash and Carry)**
+    ///
+    /// Delivery-based equity trading.
+    /// Positions are carried overnight until manually closed.
     Cnc,
 
-    /// Applicable for all segments
+    /// **Intraday**
+    ///
+    /// Positions must be closed within the same trading day.
+    /// Lower margin requirements compared to CNC.
     Intraday,
 
-    /// Applicable only for derivatives
+    /// **Margin**
+    ///
+    /// Margin trading for derivative segments (F&O).
     Margin,
 
-    ///  Cover Order
+    /// **Cover Order (CO)**
+    ///
+    /// Intraday order that **requires a stop-loss**.
+    /// Provides higher leverage due to mandatory risk control.
     Co,
 
-    /// Bracket Order
+    /// **Bracket Order (BO)**
+    ///
+    /// Order with both **stop-loss and take-profit**.
+    /// Automatically exits the position when either level is hit.
     Bo,
 
-    /// Approved Symbols Only
+    /// **Margin Trading Facility (MTF)**
+    ///
+    /// Broker-funded leveraged delivery positions for approved stocks.
     Mtf,
 }

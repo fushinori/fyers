@@ -6,16 +6,6 @@ use serde::Deserialize;
 /// Timestamps are in **UTC**. You can convert them to IST using your own
 /// timezone utilities if required.
 ///
-/// # Fields
-///
-/// - `time` — Candle open time (start of the interval)
-/// - `open` — Opening price
-/// - `high` — Highest traded price during the interval
-/// - `low` — Lowest traded price during the interval
-/// - `close` — Closing price (last traded price in the interval)
-/// - `volume` — Total traded volume during the interval
-/// - `open_interest` — Open interest for derivative instruments (if requested)
-///
 /// # Notes
 ///
 /// * The Fyers API returns candles as an array of numeric values.
@@ -43,12 +33,19 @@ use serde::Deserialize;
 /// ```
 #[derive(Debug, Clone)]
 pub struct Candle {
+    /// Candle open time (start of the interval)
     pub time: DateTime<Utc>,
+    /// Opening price
     pub open: f64,
+    /// Highest traded price during the interval
     pub high: f64,
+    /// Lowest traded price during the interval
     pub low: f64,
+    /// Closing price (last traded price in the interval)
     pub close: f64,
+    /// Total traded volume during the interval
     pub volume: f64,
+    /// Open interest for derivative instruments (if requested)
     pub open_interest: Option<f64>,
 }
 
