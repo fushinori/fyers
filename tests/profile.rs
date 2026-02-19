@@ -5,17 +5,20 @@ const PROFILE_SUCCESS: &str = include_str!("fixtures/profile_success.json");
 
 #[tokio::test]
 async fn profile_success() {
-    let ctx = common::setup();
+    let ctx = common::setup().await;
 
-    let mock = ctx.server.mock(|when, then| {
-        when.method(GET)
-            .path("/profile")
-            .header("Authorization", "TEST_CLIENT_ID:TEST_ACCESS_TOKEN");
+    let mock = ctx
+        .server
+        .mock_async(|when, then| {
+            when.method(GET)
+                .path("/profile")
+                .header("Authorization", "TEST_CLIENT_ID:TEST_ACCESS_TOKEN");
 
-        then.status(200)
-            .header("content-type", "application/json")
-            .body(PROFILE_SUCCESS);
-    });
+            then.status(200)
+                .header("content-type", "application/json")
+                .body(PROFILE_SUCCESS);
+        })
+        .await;
 
     let profile = ctx.fyers.profile().await.unwrap();
 

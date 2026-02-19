@@ -6,8 +6,8 @@ pub struct TestContext {
     pub fyers: Fyers,
 }
 
-pub fn setup() -> TestContext {
-    let server = MockServer::start();
+pub async fn setup() -> TestContext {
+    let server = MockServer::start_async().await;
     let fyers = Fyers::with_base_urls(
         "TEST_CLIENT_ID",
         "TEST_ACCESS_TOKEN",
