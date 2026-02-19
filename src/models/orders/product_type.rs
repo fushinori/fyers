@@ -6,6 +6,7 @@ use serde::Serialize;
 ///
 /// Values map directly to the strings expected by Fyers.
 #[derive(Debug, Clone, Copy, Serialize)]
+#[serde(rename_all = "UPPERCASE")]
 pub enum ProductType {
     /// **CNC (Cash and Carry)**
     ///
