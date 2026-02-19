@@ -211,3 +211,43 @@ impl OrderRequest {
         OrderBuilder::new(symbol, qty, order_type, side, product_type, validity)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn order_serializes_correctly() {
+        let order = OrderRequest::builder(
+            "NSE:IDEA-EQ",
+            1,
+            OrderType::Market,
+            Side::Buy,
+            ProductType::Intraday,
+            Validity::Day,
+        )
+        .order_tag("tag1")
+        .build();
+
+        let json = serde_json::to_value(&order).unwrap();
+
+        let expected = serde_json::json!({
+            "symbol":"NSE:IDEA-EQ",
+            "qty":1,
+            "type":2,
+            "side":1,
+            "productType":"INTRADAY",
+            "limitPrice":0.0,
+            "stopPrice":0.0,
+            "stopLoss": 0.0,
+            "takeProfit": 0.0,
+            "validity":"DAY",
+            "disclosedQty":0,
+            "offlineOrder":false,
+            "orderTag":"tag1",
+            "isSliceOrder":false,
+        });
+
+        assert_eq!(json, expected);
+    }
+}
