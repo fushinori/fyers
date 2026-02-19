@@ -44,33 +44,38 @@ pub struct Candle {
     /// Closing price (last traded price in the interval)
     pub close: f64,
     /// Total traded volume during the interval
-    pub volume: f64,
+    pub volume: u64,
     /// Open interest for derivative instruments (if requested)
     pub open_interest: Option<f64>,
 }
 
-impl<'de> Deserialize<'de> for Candle {
+#[derive(serde::Deserialize)]
+struct RawCandle(
+    i64,                           // timestamp
+    f64,                           // open
+    f64,                           // high
+    f64,                           // low
+    f64,                           // close
+    u64,                           // volume
+    #[serde(default)] Option<f64>, // open interest
+);
+
+impl<'de> serde::Deserialize<'de> for Candle {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: serde::Deserializer<'de>,
     {
-        let raw: Vec<f64> = Vec::deserialize(deserializer)?;
-
-        if raw.len() < 6 {
-            return Err(serde::de::Error::custom("invalid candle length"));
-        }
-
-        let timestamp = raw[0] as i64;
+        let raw = RawCandle::deserialize(deserializer)?;
 
         Ok(Candle {
-            time: chrono::DateTime::from_timestamp(timestamp, 0)
+            time: chrono::DateTime::from_timestamp(raw.0, 0)
                 .ok_or_else(|| serde::de::Error::custom("invalid timestamp"))?,
-            open: raw[1],
-            high: raw[2],
-            low: raw[3],
-            close: raw[4],
-            volume: raw[5],
-            open_interest: raw.get(6).copied(),
+            open: raw.1,
+            high: raw.2,
+            low: raw.3,
+            close: raw.4,
+            volume: raw.5,
+            open_interest: raw.6,
         })
     }
 }
