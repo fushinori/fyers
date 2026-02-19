@@ -23,7 +23,7 @@
 use reqwest::Client;
 use url::Url;
 
-pub mod error;
+mod error;
 mod helpers;
 mod types;
 
