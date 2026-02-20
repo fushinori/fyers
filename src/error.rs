@@ -71,16 +71,6 @@ pub enum FyersError {
     #[error("invalid position id")]
     InvalidPositionId,
 
-    /// Order was rejected by the exchange or broker.
-    ///
-    /// The message usually contains the rejection reason.
-    #[error("order rejected: {0}")]
-    OrderRejected(String),
-
-    /// Invalid Fyers App ID was provided.
-    #[error("invalid app id")]
-    InvalidAppId,
-
     /// API rate limits have been exceeded.
     ///
     /// Per second - 10
@@ -133,11 +123,7 @@ impl FyersError {
 
             -53 => FyersError::InvalidPositionId,
 
-            -99 => FyersError::OrderRejected(message),
-
             -300 => FyersError::InvalidSymbol,
-
-            -352 => FyersError::InvalidAppId,
 
             -429 => FyersError::RateLimited,
 
