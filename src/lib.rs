@@ -24,4 +24,7 @@ pub use models::{Candle, CandleResolution, HistoryBuilder, HistoryRequest};
 // Orders
 pub use models::{Order, OrderBuilder, OrderRequest, OrderType, ProductType, Side, Validity};
 
+// Positions
+pub use models::ExitPositionResult;
+
 pub use datetime::ist_datetime;
