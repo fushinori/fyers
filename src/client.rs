@@ -144,4 +144,21 @@ impl Fyers {
         )
         .await
     }
+
+    pub(crate) async fn delete<B>(
+        &self,
+        url: &str,
+        body: &B,
+    ) -> Result<serde_json::Value, FyersError>
+    where
+        B: serde::Serialize,
+    {
+        self.send_and_validate(
+            self.http
+                .delete(url)
+                .header("Authorization", self.auth_header())
+                .json(body),
+        )
+        .await
+    }
 }
