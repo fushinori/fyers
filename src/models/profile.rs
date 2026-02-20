@@ -1,7 +1,7 @@
 use serde::Deserialize;
 
 /// Basic account profile information returned by the Fyers API.
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
 pub struct Profile {
     /// Name of the client.
     pub name: String,

@@ -31,7 +31,7 @@ use serde::Deserialize;
 /// # Ok(())
 /// # }
 /// ```
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Candle {
     /// Candle open time (start of the interval)
     pub time: DateTime<Utc>,

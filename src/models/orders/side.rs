@@ -3,7 +3,7 @@ use serde_repr::*;
 /// Order side used when placing trades.
 ///
 /// This maps to the numeric values expected by Fyers.
-#[derive(Serialize_repr, Debug, Clone, Copy)]
+#[derive(Serialize_repr, Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(i8)]
 pub enum Side {
     /// Buy -> 1

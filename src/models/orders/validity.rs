@@ -1,7 +1,7 @@
 use serde::Serialize;
 
 /// Order validity specifying how long the order remains active.
-#[derive(Debug, Serialize, Clone, Copy)]
+#[derive(Debug, Serialize, Clone, Copy, PartialEq, Eq, Hash)]
 #[serde(rename_all = "UPPERCASE")]
 pub enum Validity {
     /// Immediate or Cancel

@@ -3,7 +3,7 @@ use serde_repr::*;
 /// Type of order to place.
 ///
 /// This maps directly to the numeric values expected by Fyers.
-#[derive(Serialize_repr, Debug, Clone, Copy)]
+#[derive(Serialize_repr, Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(u8)]
 pub enum OrderType {
     /// Limit order -> 1

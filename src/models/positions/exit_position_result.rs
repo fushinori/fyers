@@ -4,7 +4,7 @@ use serde::Deserialize;
 ///
 /// Fyers may return different success codes depending on whether
 /// the counter order was immediately filled or not.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone, Copy, PartialEq, Eq)]
 pub enum ExitPositionResult {
     /// The position was successfully closed.
     ///

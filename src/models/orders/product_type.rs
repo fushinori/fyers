@@ -5,7 +5,7 @@ use serde::Serialize;
 /// This determines how the position is held and margined by the broker.
 ///
 /// Values map directly to the strings expected by Fyers.
-#[derive(Debug, Clone, Copy, Serialize)]
+#[derive(Debug, Clone, Copy, Serialize, PartialEq, Eq, Hash)]
 #[serde(rename_all = "UPPERCASE")]
 pub enum ProductType {
     /// **CNC (Cash and Carry)**

@@ -19,7 +19,7 @@ use serde::Serialize;
 ///
 /// The variant names are intentionally explicit and human-readable,
 /// while the serialized values match the raw API requirements.
-#[derive(Debug, Clone, Copy, Serialize)]
+#[derive(Debug, Clone, Copy, Serialize, PartialEq, Eq, Hash)]
 pub enum CandleResolution {
     /// Daily candles.
     #[serde(rename = "D")]
