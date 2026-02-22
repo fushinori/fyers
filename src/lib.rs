@@ -1,4 +1,28 @@
-//! An async Rust client for the Fyers trading API.
+//! # fyers
+//!
+//! An idiomatic, strongly-typed, async Rust client for the Fyers Trading API.
+//!
+//! ## Overview
+//!
+//! This crate provides a type-safe interface to the Fyers REST API,
+//! modeling requests and responses as Rust types rather than exposing
+//! raw JSON values.
+//!
+//! ## Example
+//!
+//! ```no_run
+//! use fyers::{Fyers, FyersError};
+//!
+//! #[tokio::main]
+//! async fn main() -> Result<(), FyersError> {
+//!     let fyers = Fyers::new("CLIENT_ID", "ACCESS_TOKEN");
+//!
+//!     let profile = fyers.profile().await?;
+//!     println!("{profile:?}");
+//!
+//!     Ok(())
+//! }
+//! ```
 
 #![warn(missing_docs)]
 #![warn(rustdoc::broken_intra_doc_links)]
