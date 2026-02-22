@@ -1,4 +1,4 @@
 mod history;
-mod place_order;
+mod orders;
 mod positions;
 mod profile;
