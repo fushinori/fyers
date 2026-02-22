@@ -1,2 +1,2 @@
-mod cancel_pending_order;
+mod cancel_pending_orders;
 mod exit_all_positions;
