@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-02-22
+
+### Added
+- Async `Fyers` client for interacting with Fyers REST endpoints.
+- `Fyers::place_order` for placing orders.
+- `Fyers::cancel_order` for canceling a single order.
+- `Fyers::cancel_pending_orders` for canceling all pending orders for a given position.
+- `Fyers::exit_all_positions` for closing all open positions.
+- `Fyers::history` for retrieving historical market data.
+- `Fyers::profile` for fetching account profile information.
+- Strongly-typed request builders (`OrderRequest`, `HistoryRequest`).
+- Typed response models for endpoints.
+- Unified error type: `FyersError`.
+
+### Changed
+- Crate expanded beyond authentication to include core trading and market data APIs.
+
+### Notes
+- The crate now provides a type-safe interface to commonly used Fyers REST endpoints.
+- WebSocket APIs and less commonly used endpoints are not yet implemented.
+
 ## [0.1.3] - 2026-02-06
 
 ### Fixed
