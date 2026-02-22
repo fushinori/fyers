@@ -24,8 +24,8 @@
 //! }
 //! ```
 
-#![warn(missing_docs)]
-#![warn(rustdoc::broken_intra_doc_links)]
+#![deny(missing_docs)]
+#![deny(rustdoc::broken_intra_doc_links)]
 
 pub mod auth;
 pub mod client;
