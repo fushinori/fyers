@@ -1,4 +1,5 @@
 //! Fyers Client.
+use reqwest::header::{AUTHORIZATION, HeaderValue};
 
 use crate::FyersError;
 use crate::models::api_response::{ApiResponse, ApiStatus};
@@ -6,10 +7,10 @@ use crate::models::api_response::{ApiResponse, ApiStatus};
 /// Asynchronous Fyers client.
 ///
 /// Implements endpoints as associated methods.
+#[derive(Clone)]
 pub struct Fyers {
-    client_id: String,
-    access_token: String,
     http: reqwest::Client,
+    auth_header: HeaderValue,
     pub(crate) base_urls: BaseUrls,
 }
 
@@ -18,6 +19,7 @@ pub struct Fyers {
 // Edit this struct and its default implementation
 // to add more base URLs.
 // The endpoints can then choose the base URL it needs.
+#[derive(Clone)]
 pub(crate) struct BaseUrls {
     pub api_v3: String,
     pub data: String,
@@ -40,10 +42,13 @@ impl Fyers {
             .build()
             .unwrap();
 
+        let mut auth_header =
+            HeaderValue::from_str(&format!("{}:{}", client_id, access_token)).unwrap();
+        auth_header.set_sensitive(true);
+
         Self {
-            client_id: client_id.to_string(),
-            access_token: access_token.to_string(),
             http,
+            auth_header,
             base_urls: BaseUrls::default(),
         }
     }
@@ -58,19 +63,18 @@ impl Fyers {
         api_v3: impl Into<String>,
         data: impl Into<String>,
     ) -> Self {
+        let mut auth_header =
+            HeaderValue::from_str(&format!("{}:{}", client_id, access_token)).unwrap();
+        auth_header.set_sensitive(true);
+
         Self {
-            client_id: client_id.to_string(),
-            access_token: access_token.to_string(),
             http: reqwest::Client::new(),
+            auth_header,
             base_urls: BaseUrls {
                 api_v3: api_v3.into(),
                 data: data.into(),
             },
         }
-    }
-
-    fn auth_header(&self) -> String {
-        format!("{}:{}", self.client_id, self.access_token)
     }
 
     // Send requests and validate the response
@@ -108,7 +112,7 @@ impl Fyers {
         self.send_and_validate(
             self.http
                 .get(url)
-                .header("Authorization", self.auth_header()),
+                .header(AUTHORIZATION, self.auth_header.clone()),
         )
         .await
     }
@@ -126,7 +130,7 @@ impl Fyers {
             self.http
                 .get(url)
                 .query(query)
-                .header("Authorization", self.auth_header()),
+                .header(AUTHORIZATION, self.auth_header.clone()),
         )
         .await
     }
@@ -139,7 +143,7 @@ impl Fyers {
         self.send_and_validate(
             self.http
                 .post(url)
-                .header("Authorization", self.auth_header())
+                .header(AUTHORIZATION, self.auth_header.clone())
                 .json(body),
         )
         .await
@@ -156,7 +160,7 @@ impl Fyers {
         self.send_and_validate(
             self.http
                 .delete(url)
-                .header("Authorization", self.auth_header())
+                .header(AUTHORIZATION, self.auth_header.clone())
                 .json(body),
         )
         .await
